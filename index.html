@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>JSON & XML Formatter and Validator | nvo987</title>
+  <meta
+    name="description"
+    content="A fast, privacy-focused, client-side JSON and XML formatter, validator, minifier, and debugger by nvo987."
+  />
+  <meta
+    name="keywords"
+    content="JSON formatter, JSON validator, XML formatter, XML validator, JSON minifier, XML minifier, nvo987"
+  />
+  <meta name="author" content="nvo987" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#09090b" />
+
+  <link rel="canonical" href="https://json.nvo987.us/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="JSON & XML Formatter and Validator | nvo987" />
+  <meta
+    property="og:description"
+    content="Format, validate, minify, and debug JSON and XML entirely in your browser."
+  />
+  <meta property="og:url" content="https://json.nvo987.us/" />
+  <meta property="og:site_name" content="nvo987 JSON & XML Tools" />
+  <meta property="og:locale" content="en_US" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="JSON & XML Formatter and Validator | nvo987" />
+  <meta
+    name="twitter:description"
+    content="A premium client-side JSON and XML formatter, validator, minifier, and debugger."
+  />
+
+  <style>
+    :root {
+      --bg: #09090b;
+      --surface: rgba(24, 24, 27, 0.82);
+      --surface-strong: #18181b;
+      --surface-soft: #27272a;
+      --border: rgba(255, 255, 255, 0.09);
+      --border-hover: rgba(255, 255, 255, 0.18);
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --subtle: #71717a;
+      --accent: #818cf8;
+      --accent-hover: #6366f1;
+      --success: #34d399;
+      --danger: #fb7185;
+      --warning: #fbbf24;
+      --shadow:
+        0 20px 50px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family:
+        Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(99, 102, 241, 0.13), transparent 30rem),
+        radial-gradient(circle at top right, rgba(52, 211, 153, 0.06), transparent 28rem),
+        var(--bg);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .app {
+      width: min(1500px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 24px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(129, 140, 248, 0.8);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1;
+      letter-spacing: -0.055em;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .privacy-badge {
+      flex-shrink: 0;
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: rgba(24, 24, 27, 0.7);
+      color: var(--muted);
+      font-size: 0.86rem;
+      box-shadow: var(--shadow);
+    }
+
+    .privacy-badge strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--success);
+      font-size: 0.82rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .tool-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background: linear-gradient(
+        180deg,
+        rgba(39, 39, 42, 0.72),
+        rgba(24, 24, 27, 0.92)
+      );
+      box-shadow: var(--shadow);
+    }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tool-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tool-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(129, 140, 248, 0.24);
+      border-radius: 12px;
+      background: rgba(129, 140, 248, 0.1);
+      color: #c7d2fe;
+      font-weight: 900;
+      font-size: 0.82rem;
+    }
+
+    .tool-title h2 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .tool-title span {
+      display: block;
+      margin-top: 3px;
+      color: var(--subtle);
+      font-size: 0.8rem;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--subtle);
+      font-size: 0.76rem;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .status.success {
+      color: var(--success);
+      border-color: rgba(52, 211, 153, 0.2);
+      background: rgba(52, 211, 153, 0.06);
+    }
+
+    .status.error {
+      color: var(--danger);
+      border-color: rgba(251, 113, 133, 0.22);
+      background: rgba(251, 113, 133, 0.06);
+    }
+
+    .editor {
+      position: relative;
+      padding: 16px;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 470px;
+      resize: vertical;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      outline: none;
+      background: #0c0c0f;
+      color: #e4e4e7;
+      font:
+        0.88rem/1.65 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      tab-size: 2;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    textarea::placeholder {
+      color: #52525b;
+    }
+
+    textarea:focus {
+      border-color: rgba(129, 140, 248, 0.72);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 16px 16px;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 13px;
+      background: var(--surface-soft);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: var(--border-hover);
+      background: #3f3f46;
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.primary {
+      border-color: rgba(129, 140, 248, 0.6);
+      background: var(--accent);
+      color: white;
+    }
+
+    button.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    button.danger {
+      color: #fecdd3;
+      background: rgba(251, 113, 133, 0.06);
+    }
+
+    .message {
+      min-height: 54px;
+      margin: 0 16px 18px;
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(9, 9, 11, 0.45);
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .message.success {
+      border-color: rgba(52, 211, 153, 0.22);
+      color: #a7f3d0;
+      background: rgba(52, 211, 153, 0.06);
+    }
+
+    .message.error {
+      border-color: rgba(251, 113, 133, 0.28);
+      color: #fecdd3;
+      background: rgba(251, 113, 133, 0.06);
+    }
+
+    .message strong {
+      color: inherit;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 16px 16px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.018);
+    }
+
+    .settings-row label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    select {
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      background: #18181b;
+      color: var(--text);
+    }
+
+    .legal {
+      margin: 28px 0 18px;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(24, 24, 27, 0.6);
+      color: var(--subtle);
+      font-size: 0.78rem;
+      line-height: 1.7;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 0 6px;
+      border-top: 1px solid var(--border);
+      color: var(--subtle);
+      font-size: 0.82rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 1050px) {
+      .tools {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        width: min(100% - 20px, 1500px);
+        padding-top: 20px;
+      }
+
+      .hero,
+      footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .privacy-badge {
+        width: 100%;
+      }
+
+      .tool-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      textarea {
+        min-height: 360px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">Developer Utility Suite</div>
+        <h1>JSON & XML Formatter</h1>
+        <p>
+          Validate, format, minify, and debug structured data directly in your
+          browser. No uploads, no accounts, and no server-side processing.
+        </p>
+      </div>
+
+      <div class="privacy-badge">
+        <strong>100% Client-Side</strong>
+        Your data stays in your browser.
+      </div>
+    </header>
+
+    <section class="tools" aria-label="Formatter tools">
+
+      <!-- JSON TOOL -->
+      <article class="tool-card">
+        <div class="tool-header">
+          <div class="tool-title">
+            <div class="tool-icon">{ }</div>
+            <div>
+              <h2>JSON Formatter & Validator</h2>
+              <span>Format, validate, minify, and inspect JSON syntax.</span>
+            </div>
+          </div>
+
+          <div id="jsonStatus" class="status">Waiting for input</div>
+        </div>
+
+        <div class="settings-row">
+          <label for="jsonIndent">Indentation</label>
+          <select id="jsonIndent" aria-label="JSON indentation">
+            <option value="2">2 spaces</option>
+            <option value="4">4 spaces</option>
+          </select>
+        </div>
+
+        <div class="editor">
+          <textarea
+            id="jsonInput"
+            spellcheck="false"
+            placeholder='Paste JSON here, for example:
+{"name":"nvo987","enabled":true}'
+            aria-label="JSON input"
+          ></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="jsonFormatBtn">Format & Validate</button>
+          <button id="jsonMinifyBtn">Minify</button>
+          <button id="jsonCopyBtn">Copy to Clipboard</button>
+          <button class="danger" id="jsonClearBtn">Clear</button>
+        </div>
+
+        <div id="jsonMessage" class="message">
+          Paste JSON data to begin validation.
+        </div>
+      </article>
+
+      <!-- XML TOOL -->
+      <article class="tool-card">
+        <div class="tool-header">
+          <div class="tool-title">
+            <div class="tool-icon">&lt;/&gt;</div>
+            <div>
+              <h2>XML Formatter & Validator</h2>
+              <span>Validate XML syntax and generate clean indentation.</span>
+            </div>
+          </div>
+
+          <div id="xmlStatus" class="status">Waiting for input</div>
+        </div>
+
+        <div class="editor">
+          <textarea
+            id="xmlInput"
+            spellcheck="false"
+            placeholder='Paste XML here, for example:
+<root><item>Hello</item></root>'
+            aria-label="XML input"
+          ></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="xmlFormatBtn">Format & Validate</button>
+          <button id="xmlMinifyBtn">Minify</button>
+          <button id="xmlCopyBtn">Copy to Clipboard</button>
+          <button class="danger" id="xmlClearBtn">Clear</button>
+        </div>
+
+        <div id="xmlMessage" class="message">
+          Paste XML data to begin validation.
+        </div>
+      </article>
+    </section>
+
+    <section class="legal">
+      License & Legal Notice: This tool is provided 'as is', without warranty of any kind. All data processed via this formatter/validator remains strictly client-side within your browser and is never stored, logged, or transmitted to any remote server. Copyright © 2026 nvo987. All rights reserved.
+    </section>
+
+    <footer>
+      <div>© 2026 nvo987 — Structured Data Tools</div>
+
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="mailto:nvo@nvo987.us">nvo@nvo987.us</a>
+        <a
+          href="https://identity.nvo987.us"
+          target="_blank"
+          rel="noopener noreferrer"
+        >did:web:identity.nvo987.us</a>
+        <a
+          href="https://www.nvo987.us"
+          target="_blank"
+          rel="noopener noreferrer"
+        >www.nvo987.us</a>
+      </nav>
+    </footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    function getLineFromPosition(text, position) {
+      if (typeof position !== "number" || position < 0) {
+        return null;
+      }
+      return text.slice(0, position).split("\n").length;
+    }
+
+    function extractJsonErrorPosition(error) {
+      const match = error.message.match(/position\s+(\d+)/i);
+      return match ? Number(match[1]) : null;
+    }
+
+    function getJsonErrorMessage(error, input) {
+      const position = extractJsonErrorPosition(error);
+      const line = getLineFromPosition(input, position);
+
+      if (line) {
+        return `Invalid JSON on line ${line}: ${error.message}`;
+      }
+
+      return `Invalid JSON: ${error.message}`;
+    }
+
+    function setStatus(element, type, text) {
+      element.className = "status";
+      if (type) {
+        element.classList.add(type);
+      }
+      element.textContent = text;
+    }
+
+    function setMessage(element, type, html) {
+      element.className = "message";
+      if (type) {
+        element.classList.add(type);
+      }
+      element.innerHTML = html;
+    }
+
+    async function copyToClipboard(text, messageElement) {
+      if (!text.trim()) {
+        setMessage(
+          messageElement,
+          "error",
+          "<strong>Nothing to copy.</strong> Add data before using the clipboard."
+        );
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        setMessage(
+          messageElement,
+          "success",
+          "<strong>Copied successfully.</strong> The current content is now in your clipboard."
+        );
+      } catch (error) {
+        setMessage(
+          messageElement,
+          "error",
+          "<strong>Clipboard access failed.</strong> Please select and copy the content manually."
+        );
+      }
+    }
+
+    // -------------------------
+    // JSON
+    // -------------------------
+
+    const jsonInput = document.getElementById("jsonInput");
+    const jsonIndent = document.getElementById("jsonIndent");
+    const jsonStatus = document.getElementById("jsonStatus");
+    const jsonMessage = document.getElementById("jsonMessage");
+
+    function validateAndFormatJson(shouldFormat = true) {
+      const input = jsonInput.value;
+
+      if (!input.trim()) {
+        setStatus(jsonStatus, "", "Waiting for input");
+        setMessage(
+          jsonMessage,
+          "",
+          "Paste JSON data to begin validation."
+        );
+        return false;
+      }
+
+      try {
+        const parsed = JSON.parse(input);
+        const indent = Number(jsonIndent.value);
+
+        if (shouldFormat) {
+          jsonInput.value = JSON.stringify(parsed, null, indent);
+        }
+
+        setStatus(jsonStatus, "success", "Valid JSON");
+        setMessage(
+          jsonMessage,
+          "success",
+          "<strong>Validation successful.</strong> The JSON syntax is valid."
+        );
+
+        return true;
+      } catch (error) {
+        setStatus(jsonStatus, "error", "Invalid JSON");
+        setMessage(
+          jsonMessage,
+          "error",
+          `<strong>Validation failed.</strong> ${escapeHtml(
+            getJsonErrorMessage(error, input)
+          )}`
+        );
+
+        return false;
+      }
+    }
+
+    document.getElementById("jsonFormatBtn").addEventListener("click", () => {
+      validateAndFormatJson(true);
+    });
+
+    document.getElementById("jsonMinifyBtn").addEventListener("click", () => {
+      const input = jsonInput.value;
+
+      if (!input.trim()) {
+        setStatus(jsonStatus, "", "Waiting for input");
+        setMessage(
+          jsonMessage,
+          "error",
+          "<strong>No JSON found.</strong> Paste valid JSON before minifying."
+        );
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(input);
+        jsonInput.value = JSON.stringify(parsed);
+
+        setStatus(jsonStatus, "success", "Valid JSON");
+        setMessage(
+          jsonMessage,
+          "success",
+          "<strong>Minified successfully.</strong> All unnecessary whitespace was removed."
+        );
+      } catch (error) {
+        setStatus(jsonStatus, "error", "Invalid JSON");
+        setMessage(
+          jsonMessage,
+          "error",
+          `<strong>Cannot minify invalid JSON.</strong> ${escapeHtml(
+            getJsonErrorMessage(error, input)
+          )}`
+        );
+      }
+    });
+
+    document.getElementById("jsonCopyBtn").addEventListener("click", () => {
+      copyToClipboard(jsonInput.value, jsonMessage);
+    });
+
+    document.getElementById("jsonClearBtn").addEventListener("click", () => {
+      jsonInput.value = "";
+      setStatus(jsonStatus, "", "Waiting for input");
+      setMessage(
+        jsonMessage,
+        "",
+        "Paste JSON data to begin validation."
+      );
+      jsonInput.focus();
+    });
+
+    let jsonValidationTimer;
+
+    jsonInput.addEventListener("input", () => {
+      clearTimeout(jsonValidationTimer);
+
+      jsonValidationTimer = setTimeout(() => {
+        validateAndFormatJson(false);
+      }, 450);
+    });
+
+    // -------------------------
+    // XML
+    // -------------------------
+
+    const xmlInput = document.getElementById("xmlInput");
+    const xmlStatus = document.getElementById("xmlStatus");
+    const xmlMessage = document.getElementById("xmlMessage");
+
+    function parseXml(xmlString) {
+      const parser = new DOMParser();
+      const xmlDocument = parser.parseFromString(
+        xmlString,
+        "application/xml"
+      );
+
+      const parserError = xmlDocument.querySelector("parsererror");
+
+      if (parserError) {
+        return {
+          valid: false,
+          document: null,
+          error: parserError.textContent
+            .trim()
+            .replace(/\s+/g, " ")
+        };
+      }
+
+      return {
+        valid: true,
+        document: xmlDocument,
+        error: null
+      };
+    }
+
+    function formatXml(xmlString) {
+      const normalized = xmlString
+        .replace(/>\s*</g, "><")
+        .trim();
+
+      const tokens = normalized
+        .replace(/(>)(<)(\/*)/g, "$1\n$2$3")
+        .split("\n");
+
+      let indentLevel = 0;
+      const indentation = "  ";
+
+      const formatted = tokens
+        .map((line) => {
+          const trimmed = line.trim();
+
+          if (/^<\/.+>/.test(trimmed)) {
+            indentLevel = Math.max(0, indentLevel - 1);
+          }
+
+          const result = indentation.repeat(indentLevel) + trimmed;
+
+          const isOpeningTag =
+            /^<[^!?/][^>]*[^/]>\s*$/.test(trimmed) &&
+            !/^<[^>]+>.*<\/[^>]+>$/.test(trimmed);
+
+          if (isOpeningTag) {
+            indentLevel++;
+          }
+
+          return result;
+        })
+        .join("\n");
+
+      return formatted;
+    }
+
+    function serializeXml(xmlDocument) {
+      return new XMLSerializer().serializeToString(xmlDocument);
+    }
+
+    function validateAndFormatXml(shouldFormat = true) {
+      const input = xmlInput.value;
+
+      if (!input.trim()) {
+        setStatus(xmlStatus, "", "Waiting for input");
+        setMessage(
+          xmlMessage,
+          "",
+          "Paste XML data to begin validation."
+        );
+        return false;
+      }
+
+      const result = parseXml(input);
+
+      if (!result.valid) {
+        setStatus(xmlStatus, "error", "Invalid XML");
+
+        const lineMatch = result.error.match(
+          /line\s*(\d+)/i
+        );
+
+        const lineInfo = lineMatch
+          ? ` Syntax issue near line ${lineMatch[1]}.`
+          : "";
+
+        setMessage(
+          xmlMessage,
+          "error",
+          `<strong>Validation failed.</strong>${lineInfo} ${escapeHtml(
+            result.error
+          )}`
+        );
+
+        return false;
+      }
+
+      if (shouldFormat) {
+        const serialized = serializeXml(result.document);
+        xmlInput.value = formatXml(serialized);
+      }
+
+      setStatus(xmlStatus, "success", "Valid XML");
+      setMessage(
+        xmlMessage,
+        "success",
+        "<strong>Validation successful.</strong> The XML syntax is well-formed."
+      );
+
+      return true;
+    }
+
+    document.getElementById("xmlFormatBtn").addEventListener("click", () => {
+      validateAndFormatXml(true);
+    });
+
+    document.getElementById("xmlMinifyBtn").addEventListener("click", () => {
+      const input = xmlInput.value;
+
+      if (!input.trim()) {
+        setStatus(xmlStatus, "", "Waiting for input");
+        setMessage(
+          xmlMessage,
+          "error",
+          "<strong>No XML found.</strong> Paste valid XML before minifying."
+        );
+        return;
+      }
+
+      const result = parseXml(input);
+
+      if (!result.valid) {
+        setStatus(xmlStatus, "error", "Invalid XML");
+        setMessage(
+          xmlMessage,
+          "error",
+          `<strong>Cannot minify invalid XML.</strong> ${escapeHtml(
+            result.error
+          )}`
+        );
+        return;
+      }
+
+      xmlInput.value = serializeXml(result.document)
+        .replace(/>\s+</g, "><")
+        .trim();
+
+      setStatus(xmlStatus, "success", "Valid XML");
+      setMessage(
+        xmlMessage,
+        "success",
+        "<strong>Minified successfully.</strong> Unnecessary whitespace was removed."
+      );
+    });
+
+    document.getElementById("xmlCopyBtn").addEventListener("click", () => {
+      copyToClipboard(xmlInput.value, xmlMessage);
+    });
+
+    document.getElementById("xmlClearBtn").addEventListener("click", () => {
+      xmlInput.value = "";
+      setStatus(xmlStatus, "", "Waiting for input");
+      setMessage(
+        xmlMessage,
+        "",
+        "Paste XML data to begin validation."
+      );
+      xmlInput.focus();
+    });
+
+    let xmlValidationTimer;
+
+    xmlInput.addEventListener("input", () => {
+      clearTimeout(xmlValidationTimer);
+
+      xmlValidationTimer = setTimeout(() => {
+        validateAndFormatXml(false);
+      }, 450);
+    });
+
+    // -------------------------
+    // Security helper
+    // -------------------------
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+  </html>
