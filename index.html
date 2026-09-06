@@ -1,0 +1,4945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Developer Toolkit | JSON, XML, JWT, Base64, Hash & More</title>
+
+  <meta
+    name="description"
+    content="Privacy-first browser-based developer toolkit for JSON, XML, JWT, Base64, URL encoding, hashing, UUID generation, timestamps and more."
+  >
+
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#080a0f">
+
+  <link rel="canonical" href="https://json.nvo987.us/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Developer Toolkit">
+  <meta
+    property="og:description"
+    content="Privacy-first browser-based developer tools. No analytics, tracking or user-data collection."
+  >
+  <meta property="og:url" content="https://json.nvo987.us/">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Developer Toolkit">
+  <meta
+    name="twitter:description"
+    content="Privacy-first browser-based developer tools."
+  >
+
+  <style>
+    :root {
+      --bg: #080a0f;
+      --bg-secondary: #0d1017;
+      --panel: #11151d;
+      --panel-hover: #151a23;
+      --border: #252c38;
+      --border-light: #303846;
+
+      --text: #f2f5f9;
+      --text-secondary: #aeb7c5;
+      --text-muted: #7d8796;
+
+      --accent: #7c9cff;
+      --accent-hover: #91abff;
+
+      --success: #54d68c;
+      --error: #ff6574;
+      --warning: #f2c96d;
+
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+
+      background:
+        radial-gradient(
+          circle at top center,
+          rgba(76, 105, 180, 0.10),
+          transparent 38%
+        ),
+        var(--bg);
+
+      color: var(--text);
+
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    button,
+    textarea,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button,
+    a,
+    select,
+    input,
+    textarea {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+
+      width: 270px;
+      height: 100vh;
+
+      flex: 0 0 270px;
+
+      overflow-y: auto;
+
+      padding: 25px 18px;
+
+      background: rgba(13, 16, 23, 0.96);
+
+      border-right: 1px solid var(--border);
+    }
+
+    .brand {
+      display: block;
+
+      margin-bottom: 28px;
+
+      color: var(--text);
+
+      text-decoration: none;
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      margin-top: 3px;
+
+      color: var(--text-muted);
+
+      font-size: 13px;
+    }
+
+    .nav-group {
+      margin-bottom: 23px;
+    }
+
+    .nav-title {
+      margin: 0 0 8px;
+      padding: 0 10px;
+
+      color: #687385;
+
+      font-size: 11px;
+      font-weight: 750;
+
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-button {
+      display: flex;
+      align-items: center;
+
+      width: 100%;
+
+      min-height: 40px;
+
+      margin-bottom: 3px;
+      padding: 8px 11px;
+
+      border: 1px solid transparent;
+      border-radius: 9px;
+
+      background: transparent;
+
+      color: var(--text-secondary);
+
+      cursor: pointer;
+
+      text-align: left;
+
+      font-size: 14px;
+      font-weight: 600;
+
+      transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease;
+    }
+
+    .nav-button:hover {
+      background: var(--panel-hover);
+      color: var(--text);
+    }
+
+    .nav-button.active {
+      background: rgba(124, 156, 255, 0.12);
+      border-color: rgba(124, 156, 255, 0.22);
+
+      color: #c9d5ff;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .container {
+      width: min(1100px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 65px 0 35px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+
+      padding: 7px 13px;
+
+      border: 1px solid var(--border);
+      border-radius: 999px;
+
+      background: rgba(255, 255, 255, 0.025);
+
+      color: var(--text-secondary);
+
+      font-size: 13px;
+      font-weight: 650;
+
+      letter-spacing: 0.04em;
+    }
+
+    h1 {
+      margin: 18px 0 0;
+
+      font-size: clamp(34px, 5vw, 56px);
+      line-height: 1.08;
+
+      letter-spacing: -0.045em;
+    }
+
+    .hero-text {
+      max-width: 760px;
+
+      margin: 18px 0 0;
+
+      color: var(--text-secondary);
+
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .privacy-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-top: 22px;
+      padding: 9px 13px;
+
+      border: 1px solid rgba(84, 214, 140, 0.22);
+      border-radius: 9px;
+
+      background: rgba(84, 214, 140, 0.06);
+
+      color: #9de5bb;
+
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* =========================
+       TOOLS
+    ========================= */
+
+    .tool {
+      display: none;
+
+      padding-bottom: 35px;
+    }
+
+    .tool.active {
+      display: block;
+    }
+
+    .tool-header {
+      margin-bottom: 16px;
+    }
+
+    .tool-header h2 {
+      margin: 0;
+
+      font-size: 28px;
+      line-height: 1.25;
+
+      letter-spacing: -0.025em;
+    }
+
+    .tool-description {
+      margin: 7px 0 0;
+
+      color: var(--text-muted);
+
+      font-size: 15px;
+    }
+
+    .editor-card {
+      overflow: hidden;
+
+      background: var(--panel);
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.22);
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+
+      min-height: 400px;
+    }
+
+    .line-numbers {
+      padding: 18px 9px;
+
+      background: #0b0e14;
+
+      border-right: 1px solid var(--border);
+
+      color: #596271;
+
+      text-align: right;
+
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+      font-size: 14px;
+      line-height: 1.7;
+
+      user-select: none;
+
+      overflow: hidden;
+
+      white-space: pre;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 400px;
+
+      resize: vertical;
+
+      padding: 18px;
+
+      border: 0;
+      outline: 0;
+
+      background: transparent;
+
+      color: #e9edf4;
+
+      caret-color: var(--accent);
+
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+      font-size: 15px;
+      line-height: 1.7;
+
+      tab-size: 2;
+    }
+
+    textarea::placeholder {
+      color: #555f6e;
+    }
+
+    textarea:focus {
+      background: rgba(255, 255, 255, 0.012);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+
+      gap: 9px;
+
+      padding: 14px;
+
+      border-top: 1px solid var(--border);
+
+      background: #0d1118;
+    }
+
+    button {
+      min-height: 43px;
+
+      padding: 8px 15px;
+
+      border: 1px solid var(--border-light);
+      border-radius: 9px;
+
+      background: #151a23;
+
+      color: var(--text);
+
+      cursor: pointer;
+
+      font-size: 14px;
+      font-weight: 650;
+
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    button:hover {
+      background: var(--panel-hover);
+      border-color: #414b5b;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+
+      color: #08101f;
+    }
+
+    button.primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .status {
+      min-height: 50px;
+
+      padding: 13px 17px;
+
+      border-top: 1px solid var(--border);
+
+      color: var(--text-secondary);
+
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .status.error {
+      color: var(--error);
+    }
+
+    .status.warning {
+      color: var(--warning);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+
+      gap: 15px;
+
+      margin-bottom: 15px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+
+      gap: 7px;
+    }
+
+    .field label {
+      color: var(--text-secondary);
+
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    input,
+    select {
+      width: 100%;
+
+      min-height: 44px;
+
+      padding: 8px 12px;
+
+      border: 1px solid var(--border-light);
+      border-radius: 9px;
+
+      outline: none;
+
+      background: #11151d;
+
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    .simple-card {
+      padding: 20px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+
+      background: var(--panel);
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      gap: 18px;
+    }
+
+    .result-box {
+      min-height: 150px;
+
+      padding: 16px;
+
+      border: 1px solid var(--border);
+      border-radius: 10px;
+
+      background: #0b0e14;
+
+      color: #e9edf4;
+
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+      font-size: 14px;
+
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .tree {
+      min-height: 150px;
+
+      padding: 16px;
+
+      border: 1px solid var(--border);
+      border-radius: 10px;
+
+      background: #0b0e14;
+
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+      font-size: 14px;
+
+      overflow: auto;
+    }
+
+    .tree-row {
+      white-space: nowrap;
+      line-height: 1.8;
+    }
+
+    .tree-key {
+      color: #b9c8ff;
+    }
+
+    .tree-value {
+      color: #d2d9e5;
+    }
+
+    .diff-added {
+      background: rgba(84, 214, 140, 0.12);
+      color: #8ee8b2;
+    }
+
+    .diff-removed {
+      background: rgba(255, 101, 116, 0.12);
+      color: #ff9ba5;
+    }
+
+    .notice {
+      margin-bottom: 15px;
+      padding: 12px 14px;
+
+      border: 1px solid rgba(242, 201, 109, 0.2);
+      border-radius: 9px;
+
+      background: rgba(242, 201, 109, 0.05);
+
+      color: var(--warning);
+
+      font-size: 14px;
+    }
+
+    /* =========================
+       INFO
+    ========================= */
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 16px;
+
+      margin: 25px 0 60px;
+    }
+
+    .info-card {
+      padding: 22px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+
+      background: rgba(17, 21, 29, 0.75);
+    }
+
+    .info-card h3 {
+      margin: 0 0 8px;
+
+      font-size: 18px;
+    }
+
+    .info-card p {
+      margin: 0;
+
+      color: var(--text-secondary);
+
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* =========================
+       LEGAL
+    ========================= */
+
+    .legal {
+      margin: 20px 0 55px;
+
+      padding: 34px 36px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.025),
+          rgba(255, 255, 255, 0.008)
+        );
+    }
+
+    .legal h2 {
+      margin: 0 0 25px;
+
+      font-size: 28px;
+      line-height: 1.25;
+
+      letter-spacing: -0.02em;
+    }
+
+    .legal h3 {
+      margin: 28px 0 8px;
+
+      font-size: 18px;
+    }
+
+    .legal p {
+      margin: 0 0 20px;
+
+      color: #c4ccd7;
+
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    .legal p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      border-top: 1px solid var(--border);
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(13, 16, 23, 0.45),
+          rgba(8, 10, 15, 0.95)
+        );
+    }
+
+    .footer-inner {
+      width: min(1100px, calc(100% - 40px));
+
+      margin: 0 auto;
+
+      padding: 28px 0 32px;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+
+      gap: 17px;
+
+      text-align: center;
+    }
+
+    .footer-copyright {
+      color: var(--text-muted);
+
+      font-size: 14px;
+    }
+
+    .footer-links {
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+
+      flex-wrap: wrap;
+
+      gap: 9px 11px;
+    }
+
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 41px;
+
+      padding: 8px 14px;
+
+      border: 1px solid var(--border);
+
+      border-radius: 9px;
+
+      background: rgba(17, 21, 29, 0.75);
+
+      color: var(--text-secondary);
+
+      text-decoration: none;
+
+      font-size: 13px;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+
+      background: var(--panel-hover);
+
+      border-color: var(--border-light);
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    .mobile-nav {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        width: 225px;
+        flex-basis: 225px;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        position: static;
+
+        width: 100%;
+        height: auto;
+
+        padding: 13px 12px;
+
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .brand {
+        margin-bottom: 10px;
+      }
+
+      .nav-groups {
+        display: flex;
+        gap: 6px;
+
+        overflow-x: auto;
+
+        padding-bottom: 2px;
+      }
+
+      .nav-group {
+        flex: 0 0 auto;
+
+        margin: 0;
+      }
+
+      .nav-title {
+        display: none;
+      }
+
+      .nav-button {
+        width: auto;
+
+        white-space: nowrap;
+      }
+
+      .container {
+        width: min(100% - 24px, 1100px);
+      }
+
+      header {
+        padding: 42px 0 28px;
+      }
+
+      .hero-text {
+        font-size: 16px;
+      }
+
+      .two-column,
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+
+      .legal {
+        padding: 26px 21px;
+      }
+
+      .footer-inner {
+        width: min(100% - 24px, 600px);
+      }
+
+      .footer-links {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .footer-links a {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .editor-grid {
+        grid-template-columns: 43px 1fr;
+      }
+
+      textarea {
+        min-height: 340px;
+        padding: 14px;
+
+        font-size: 14px;
+      }
+
+      .line-numbers {
+        padding: 14px 7px;
+        font-size: 12px;
+      }
+
+      .toolbar button {
+        flex: 1 1 calc(50% - 9px);
+      }
+
+      .legal h2 {
+        font-size: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- =========================
+       NAVIGATION
+  ========================== -->
+
+  <aside class="sidebar">
+
+    <a class="brand" href="#" data-tool="json-formatter">
+      <div class="brand-title">nvo987 Toolkit</div>
+      <div class="brand-subtitle">Privacy-first developer tools</div>
+    </a>
+
+    <nav class="nav-groups" aria-label="Developer tools">
+
+      <div class="nav-group">
+        <div class="nav-title">JSON</div>
+
+        <button class="nav-button active" data-tool="json-formatter">
+          JSON Formatter
+        </button>
+
+        <button class="nav-button" data-tool="json-validator">
+          JSON Validator
+        </button>
+
+        <button class="nav-button" data-tool="json-tree">
+          JSON Tree Viewer
+        </button>
+
+        <button class="nav-button" data-tool="json-schema">
+          JSON Schema Validator
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">XML</div>
+
+        <button class="nav-button" data-tool="xml-formatter">
+          XML Formatter
+        </button>
+
+        <button class="nav-button" data-tool="xml-validator">
+          XML Validator
+        </button>
+
+        <button class="nav-button" data-tool="converter">
+          JSON ↔ XML Converter
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">Diff</div>
+
+        <button class="nav-button" data-tool="json-diff">
+          JSON Diff
+        </button>
+
+        <button class="nav-button" data-tool="xml-diff">
+          XML Diff
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">Encoding</div>
+
+        <button class="nav-button" data-tool="base64">
+          Base64 Encoder / Decoder
+        </button>
+
+        <button class="nav-button" data-tool="url">
+          URL Encoder / Decoder
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">Security</div>
+
+        <button class="nav-button" data-tool="jwt">
+          JWT Decoder
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">Generators</div>
+
+        <button class="nav-button" data-tool="uuid">
+          UUID Generator
+        </button>
+
+        <button class="nav-button" data-tool="hash">
+          Hash Generator
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">Time</div>
+
+        <button class="nav-button" data-tool="timestamp">
+          Timestamp Converter
+        </button>
+      </div>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- =========================
+       MAIN
+  ========================== -->
+
+  <div class="main">
+
+    <header>
+      <div class="container">
+
+        <div class="badge">
+          BROWSER-BASED DEVELOPER TOOLKIT
+        </div>
+
+        <h1>
+          Developer Toolkit
+        </h1>
+
+        <p class="hero-text">
+          JSON, XML, encoding, hashing, JWT, UUID and timestamp tools
+          designed for everyday development workflows.
+        </p>
+
+        <div class="privacy-note">
+          ✓ Client-side processing · No analytics · No tracking · No data collection
+        </div>
+
+      </div>
+    </header>
+
+
+    <main class="container">
+
+      <!-- =========================
+           JSON FORMATTER
+      ========================== -->
+
+      <section
+        class="tool active"
+        id="tool-json-formatter"
+        aria-labelledby="jsonFormatterTitle"
+      >
+
+        <div class="tool-header">
+          <h2 id="jsonFormatterTitle">
+            JSON Formatter
+          </h2>
+
+          <p class="tool-description">
+            Format, validate, minify and copy JSON directly in your browser.
+          </p>
+        </div>
+
+        <div class="editor-card">
+
+          <div class="editor-grid">
+
+            <div
+              class="line-numbers"
+              id="jsonFormatLines"
+              aria-hidden="true"
+            >1</div>
+
+            <textarea
+              id="jsonFormatterInput"
+              spellcheck="false"
+              aria-label="JSON input"
+              placeholder='{
+  "name": "example",
+  "valid": true
+}'
+            ></textarea>
+
+          </div>
+
+          <div class="toolbar">
+
+            <button
+              class="primary"
+              type="button"
+              id="jsonFormatButton"
+            >
+              Format
+            </button>
+
+            <button type="button" id="jsonMinifyButton">
+              Minify
+            </button>
+
+            <button type="button" id="jsonCopyButton">
+              Copy
+            </button>
+
+            <button type="button" id="jsonClearButton">
+              Clear
+            </button>
+
+            <label
+              style="display:flex;align-items:center;gap:8px;margin-left:auto;color:var(--text-secondary);font-size:14px;"
+            >
+              Indentation
+
+              <select id="jsonIndent">
+                <option value="2">2 spaces</option>
+                <option value="4">4 spaces</option>
+              </select>
+            </label>
+
+          </div>
+
+          <div
+            class="status"
+            id="jsonFormatStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           JSON VALIDATOR
+      ========================== -->
+
+      <section class="tool" id="tool-json-validator">
+
+        <div class="tool-header">
+          <h2>JSON Validator</h2>
+
+          <p class="tool-description">
+            Check JSON syntax and receive line and column information for errors.
+          </p>
+        </div>
+
+        <div class="editor-card">
+
+          <div class="editor-grid">
+
+            <div
+              class="line-numbers"
+              id="jsonValidatorLines"
+              aria-hidden="true"
+            >1</div>
+
+            <textarea
+              id="jsonValidatorInput"
+              spellcheck="false"
+              aria-label="JSON validator input"
+              placeholder="Paste JSON here..."
+            ></textarea>
+
+          </div>
+
+          <div class="toolbar">
+
+            <button
+              class="primary"
+              type="button"
+              id="jsonValidateButton"
+            >
+              Validate JSON
+            </button>
+
+            <button type="button" id="jsonValidatorClear">
+              Clear
+            </button>
+
+          </div>
+
+          <div
+            class="status"
+            id="jsonValidatorStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           JSON TREE
+      ========================== -->
+
+      <section class="tool" id="tool-json-tree">
+
+        <div class="tool-header">
+          <h2>JSON Tree Viewer</h2>
+
+          <p class="tool-description">
+            Explore JSON objects and arrays as a readable tree.
+          </p>
+        </div>
+
+        <div class="simple-card">
+
+          <div class="field">
+            <label for="jsonTreeInput">
+              JSON
+            </label>
+
+            <textarea
+              id="jsonTreeInput"
+              style="min-height:260px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+              spellcheck="false"
+              aria-label="JSON tree input"
+              placeholder='{"user":{"name":"John","roles":["admin","developer"]}}'
+            ></textarea>
+          </div>
+
+          <div class="toolbar" style="padding:15px 0 0;background:transparent;border:0;">
+            <button
+              class="primary"
+              type="button"
+              id="jsonTreeButton"
+            >
+              View Tree
+            </button>
+          </div>
+
+          <div
+            class="status"
+            id="jsonTreeStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+          <div
+            class="tree"
+            id="jsonTreeOutput"
+            style="margin-top:15px;"
+          >
+            No JSON loaded.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           JSON SCHEMA
+      ========================== -->
+
+      <section class="tool" id="tool-json-schema">
+
+        <div class="tool-header">
+          <h2>JSON Schema Validator</h2>
+
+          <p class="tool-description">
+            Validate JSON against a JSON Schema.
+          </p>
+        </div>
+
+        <div class="two-column">
+
+          <div class="simple-card">
+
+            <div class="field">
+              <label for="schemaJson">
+                JSON
+              </label>
+
+              <textarea
+                id="schemaJson"
+                style="min-height:330px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+                spellcheck="false"
+                placeholder='{"name":"John","age":30}'
+              ></textarea>
+            </div>
+
+          </div>
+
+          <div class="simple-card">
+
+            <div class="field">
+              <label for="schemaInput">
+                JSON Schema
+              </label>
+
+              <textarea
+                id="schemaInput"
+                style="min-height:330px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+                spellcheck="false"
+                placeholder='{
+  "type":"object",
+  "required":["name"],
+  "properties":{
+    "name":{"type":"string"}
+  }
+}'
+              ></textarea>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+          <button
+            class="primary"
+            type="button"
+            id="schemaValidateButton"
+          >
+            Validate
+          </button>
+
+        </div>
+
+        <div
+          class="status"
+          id="schemaStatus"
+          role="status"
+          aria-live="polite"
+        >
+          Ready.
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           XML FORMATTER
+      ========================== -->
+
+      <section class="tool" id="tool-xml-formatter">
+
+        <div class="tool-header">
+          <h2>XML Formatter</h2>
+
+          <p class="tool-description">
+            Format valid XML using your browser's built-in XML parser.
+          </p>
+        </div>
+
+        <div class="editor-card">
+
+          <div class="editor-grid">
+
+            <div
+              class="line-numbers"
+              id="xmlFormatLines"
+              aria-hidden="true"
+            >1</div>
+
+            <textarea
+              id="xmlFormatterInput"
+              spellcheck="false"
+              aria-label="XML formatter input"
+              placeholder='<?xml version="1.0"?>
+<root>
+  <item>Hello</item>
+</root>'
+            ></textarea>
+
+          </div>
+
+          <div class="toolbar">
+
+            <button
+              class="primary"
+              type="button"
+              id="xmlFormatButton"
+            >
+              Format
+            </button>
+
+            <button type="button" id="xmlMinifyButton">
+              Minify
+            </button>
+
+            <button type="button" id="xmlCopyButton">
+              Copy
+            </button>
+
+            <button type="button" id="xmlClearButton">
+              Clear
+            </button>
+
+          </div>
+
+          <div
+            class="status"
+            id="xmlFormatStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           XML VALIDATOR
+      ========================== -->
+
+      <section class="tool" id="tool-xml-validator">
+
+        <div class="tool-header">
+          <h2>XML Validator</h2>
+
+          <p class="tool-description">
+            Check whether XML is well-formed.
+          </p>
+        </div>
+
+        <div class="editor-card">
+
+          <div class="editor-grid">
+
+            <div
+              class="line-numbers"
+              id="xmlValidatorLines"
+              aria-hidden="true"
+            >1</div>
+
+            <textarea
+              id="xmlValidatorInput"
+              spellcheck="false"
+              aria-label="XML validator input"
+              placeholder="<root><item>Hello</item></root>"
+            ></textarea>
+
+          </div>
+
+          <div class="toolbar">
+
+            <button
+              class="primary"
+              type="button"
+              id="xmlValidateButton"
+            >
+              Validate XML
+            </button>
+
+            <button type="button" id="xmlValidatorClear">
+              Clear
+            </button>
+
+          </div>
+
+          <div
+            class="status"
+            id="xmlValidatorStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           JSON XML CONVERTER
+      ========================== -->
+
+      <section class="tool" id="tool-converter">
+
+        <div class="tool-header">
+          <h2>JSON ↔ XML Converter</h2>
+
+          <p class="tool-description">
+            Convert simple JSON structures to XML and XML structures to JSON.
+          </p>
+        </div>
+
+        <div class="two-column">
+
+          <div class="simple-card">
+
+            <div class="field">
+              <label for="converterJson">
+                JSON
+              </label>
+
+              <textarea
+                id="converterJson"
+                style="min-height:350px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+                spellcheck="false"
+                placeholder='{
+  "name": "John",
+  "age": 30
+}'
+              ></textarea>
+            </div>
+
+            <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+              <button
+                class="primary"
+                type="button"
+                id="jsonToXmlButton"
+              >
+                JSON → XML
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div class="simple-card">
+
+            <div class="field">
+              <label for="converterXml">
+                XML
+              </label>
+
+              <textarea
+                id="converterXml"
+                style="min-height:350px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+                spellcheck="false"
+                placeholder="<root><name>John</name><age>30</age></root>"
+              ></textarea>
+            </div>
+
+            <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+              <button
+                class="primary"
+                type="button"
+                id="xmlToJsonButton"
+              >
+                XML → JSON
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div
+          class="status"
+          id="converterStatus"
+          role="status"
+          aria-live="polite"
+        >
+          Ready.
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           JSON DIFF
+      ========================== -->
+
+      <section class="tool" id="tool-json-diff">
+
+        <div class="tool-header">
+          <h2>JSON Diff</h2>
+
+          <p class="tool-description">
+            Compare two JSON documents and see changed keys.
+          </p>
+        </div>
+
+        <div class="two-column">
+
+          <div class="simple-card">
+
+            <div class="field">
+              <label for="jsonDiffA">Original JSON</label>
+
+              <textarea
+                id="jsonDiffA"
+                style="min-height:320px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+                spellcheck="false"
+              ></textarea>
+            </div>
+
+          </div>
+
+          <div class="simple-card">
+
+            <div class="field">
+              <label for="jsonDiffB">New JSON</label>
+
+              <textarea
+                id="jsonDiffB"
+                style="min-height:320px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+                spellcheck="false"
+              ></textarea>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+          <button
+            class="primary"
+            type="button"
+            id="jsonDiffButton"
+          >
+            Compare
+          </button>
+
+        </div>
+
+        <div
+          class="status"
+          id="jsonDiffStatus"
+          role="status"
+          aria-live="polite"
+        >
+          Ready.
+        </div>
+
+        <div
+          class="result-box"
+          id="jsonDiffOutput"
+        >
+          No comparison performed.
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           XML DIFF
+      ========================== -->
+
+      <section class="tool" id="tool-xml-diff">
+
+        <div class="tool-header">
+          <h2>XML Diff</h2>
+
+          <p class="tool-description">
+            Compare two XML documents.
+          </p>
+        </div>
+
+        <div class="two-column">
+
+          <div class="simple-card">
+
+            <div class="field">
+              <label for="xmlDiffA">Original XML</label>
+
+              <textarea
+                id="xmlDiffA"
+                style="min-height:320px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+                spellcheck="false"
+              ></textarea>
+            </div>
+
+          </div>
+
+          <div class="simple-card">
+
+            <div class="field">
+              <label for="xmlDiffB">New XML</label>
+
+              <textarea
+                id="xmlDiffB"
+                style="min-height:320px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+                spellcheck="false"
+              ></textarea>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+          <button
+            class="primary"
+            type="button"
+            id="xmlDiffButton"
+          >
+            Compare
+          </button>
+
+        </div>
+
+        <div
+          class="status"
+          id="xmlDiffStatus"
+          role="status"
+          aria-live="polite"
+        >
+          Ready.
+        </div>
+
+        <div
+          class="result-box"
+          id="xmlDiffOutput"
+        >
+          No comparison performed.
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           BASE64
+      ========================== -->
+
+      <section class="tool" id="tool-base64">
+
+        <div class="tool-header">
+          <h2>Base64 Encoder / Decoder</h2>
+
+          <p class="tool-description">
+            Encode and decode UTF-8 text using Base64.
+          </p>
+        </div>
+
+        <div class="simple-card">
+
+          <div class="field">
+            <label for="base64Input">Input</label>
+
+            <textarea
+              id="base64Input"
+              style="min-height:260px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+              spellcheck="false"
+              placeholder="Enter text or Base64..."
+            ></textarea>
+          </div>
+
+          <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+            <button
+              class="primary"
+              type="button"
+              id="base64Encode"
+            >
+              Encode
+            </button>
+
+            <button type="button" id="base64Decode">
+              Decode
+            </button>
+
+            <button type="button" id="base64Copy">
+              Copy Result
+            </button>
+
+          </div>
+
+          <div
+            class="result-box"
+            id="base64Output"
+          >
+            Result will appear here.
+          </div>
+
+          <div
+            class="status"
+            id="base64Status"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           URL
+      ========================== -->
+
+      <section class="tool" id="tool-url">
+
+        <div class="tool-header">
+          <h2>URL Encoder / Decoder</h2>
+
+          <p class="tool-description">
+            Encode or decode URL components directly in your browser.
+          </p>
+        </div>
+
+        <div class="simple-card">
+
+          <div class="field">
+            <label for="urlInput">Input</label>
+
+            <textarea
+              id="urlInput"
+              style="min-height:220px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+              spellcheck="false"
+              placeholder="https://example.com/?hello=hello world"
+            ></textarea>
+          </div>
+
+          <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+            <button
+              class="primary"
+              type="button"
+              id="urlEncode"
+            >
+              Encode
+            </button>
+
+            <button type="button" id="urlDecode">
+              Decode
+            </button>
+
+            <button type="button" id="urlCopy">
+              Copy Result
+            </button>
+
+          </div>
+
+          <div
+            class="result-box"
+            id="urlOutput"
+          >
+            Result will appear here.
+          </div>
+
+          <div
+            class="status"
+            id="urlStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           JWT
+      ========================== -->
+
+      <section class="tool" id="tool-jwt">
+
+        <div class="tool-header">
+          <h2>JWT Decoder</h2>
+
+          <p class="tool-description">
+            Decode the header and payload of a JSON Web Token locally.
+          </p>
+        </div>
+
+        <div class="notice">
+          Security notice: decoding a JWT does not verify its signature.
+          Never treat decoded data as trusted authentication information.
+        </div>
+
+        <div class="simple-card">
+
+          <div class="field">
+
+            <label for="jwtInput">
+              JWT
+            </label>
+
+            <textarea
+              id="jwtInput"
+              style="min-height:220px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+              spellcheck="false"
+              placeholder="eyJhbGciOiJIUzI1NiIs..."
+            ></textarea>
+
+          </div>
+
+          <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+            <button
+              class="primary"
+              type="button"
+              id="jwtDecode"
+            >
+              Decode JWT
+            </button>
+
+          </div>
+
+          <div class="two-column">
+
+            <div>
+
+              <strong>Header</strong>
+
+              <div
+                class="result-box"
+                id="jwtHeader"
+                style="margin-top:8px;"
+              >
+                —
+              </div>
+
+            </div>
+
+            <div>
+
+              <strong>Payload</strong>
+
+              <div
+                class="result-box"
+                id="jwtPayload"
+                style="margin-top:8px;"
+              >
+                —
+              </div>
+
+            </div>
+
+          </div>
+
+          <div
+            class="status"
+            id="jwtStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           UUID
+      ========================== -->
+
+      <section class="tool" id="tool-uuid">
+
+        <div class="tool-header">
+          <h2>UUID Generator</h2>
+
+          <p class="tool-description">
+            Generate UUID v4 identifiers using the browser's cryptographic API.
+          </p>
+        </div>
+
+        <div class="simple-card">
+
+          <div
+            class="result-box"
+            id="uuidOutput"
+            style="font-size:20px;min-height:80px;"
+          >
+            Click Generate.
+          </div>
+
+          <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+            <button
+              class="primary"
+              type="button"
+              id="uuidGenerate"
+            >
+              Generate UUID
+            </button>
+
+            <button type="button" id="uuidCopy">
+              Copy
+            </button>
+
+          </div>
+
+          <div
+            class="status"
+            id="uuidStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           HASH
+      ========================== -->
+
+      <section class="tool" id="tool-hash">
+
+        <div class="tool-header">
+          <h2>Hash Generator</h2>
+
+          <p class="tool-description">
+            Generate cryptographic hashes locally using the Web Crypto API.
+          </p>
+        </div>
+
+        <div class="simple-card">
+
+          <div class="field-row">
+
+            <div class="field">
+
+              <label for="hashAlgorithm">
+                Algorithm
+              </label>
+
+              <select id="hashAlgorithm">
+                <option value="SHA-256">SHA-256</option>
+                <option value="SHA-384">SHA-384</option>
+                <option value="SHA-512">SHA-512</option>
+              </select>
+
+            </div>
+
+          </div>
+
+          <div class="field">
+
+            <label for="hashInput">
+              Text
+            </label>
+
+            <textarea
+              id="hashInput"
+              style="min-height:220px;border:1px solid var(--border);border-radius:10px;background:#0b0e14;"
+              spellcheck="false"
+              placeholder="Enter text..."
+            ></textarea>
+
+          </div>
+
+          <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+            <button
+              class="primary"
+              type="button"
+              id="hashGenerate"
+            >
+              Generate Hash
+            </button>
+
+            <button type="button" id="hashCopy">
+              Copy
+            </button>
+
+          </div>
+
+          <div
+            class="result-box"
+            id="hashOutput"
+          >
+            —
+          </div>
+
+          <div
+            class="status"
+            id="hashStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           TIMESTAMP
+      ========================== -->
+
+      <section class="tool" id="tool-timestamp">
+
+        <div class="tool-header">
+          <h2>Timestamp Converter</h2>
+
+          <p class="tool-description">
+            Convert Unix timestamps and dates.
+          </p>
+        </div>
+
+        <div class="simple-card">
+
+          <div class="field-row">
+
+            <div class="field">
+
+              <label for="timestampInput">
+                Unix Timestamp
+              </label>
+
+              <input
+                id="timestampInput"
+                type="text"
+                placeholder="e.g. 1710000000"
+              >
+
+            </div>
+
+            <div class="field">
+
+              <label for="dateInput">
+                Date / Time
+              </label>
+
+              <input
+                id="dateInput"
+                type="datetime-local"
+              >
+
+            </div>
+
+          </div>
+
+          <div class="toolbar" style="padding-left:0;padding-right:0;background:transparent;border:0;">
+
+            <button
+              class="primary"
+              type="button"
+              id="timestampToDate"
+            >
+              Timestamp → Date
+            </button>
+
+            <button
+              type="button"
+              id="dateToTimestamp"
+            >
+              Date → Timestamp
+            </button>
+
+            <button
+              type="button"
+              id="currentTimestamp"
+            >
+              Current Timestamp
+            </button>
+
+          </div>
+
+          <div
+            class="result-box"
+            id="timestampOutput"
+          >
+            Result will appear here.
+          </div>
+
+          <div
+            class="status"
+            id="timestampStatus"
+            role="status"
+            aria-live="polite"
+          >
+            Ready.
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           INFO
+      ========================== -->
+
+      <section class="info-grid">
+
+        <div class="info-card">
+
+          <h3>
+            Client-Side Processing
+          </h3>
+
+          <p>
+            The tools process entered data locally in your browser.
+            Tool input is not intentionally transmitted to the website operator.
+          </p>
+
+        </div>
+
+        <div class="info-card">
+
+          <h3>
+            No Analytics
+          </h3>
+
+          <p>
+            The toolkit does not use analytics, advertising or user-tracking
+            services for its operation.
+          </p>
+
+        </div>
+
+        <div class="info-card">
+
+          <h3>
+            Developer Focused
+          </h3>
+
+          <p>
+            Formatting, validation, conversion, encoding, hashing and
+            other common development utilities are available in one place.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           LEGAL
+      ========================== -->
+
+      <section class="legal">
+
+        <h2>
+          Privacy &amp; Legal Notice
+        </h2>
+
+        <h3>
+          Privacy
+        </h3>
+
+        <p>
+          This website provides browser-based developer tools for working with
+          JSON, XML, encoded text, JWTs, UUIDs, hashes, timestamps and related
+          development data.
+        </p>
+
+        <p>
+          The data entered into the tools is processed locally in the user's
+          browser. The website operator does not intentionally transmit the
+          content entered into the tools to a server for processing, analysis,
+          logging or storage.
+        </p>
+
+        <p>
+          The website does not use analytics, advertising, behavioral tracking,
+          profiling or statistics services for the operation of these tools.
+          No user statistics are collected by the toolkit itself, and no user
+          account is required to use the tools.
+        </p>
+
+        <p>
+          Tool input is not intentionally stored by the toolkit in a database,
+          server-side log or user profile. Users should nevertheless understand
+          that their browser, operating system, network provider, hosting
+          provider, CDN, security infrastructure or other third-party services
+          may process technical information independently of this website.
+        </p>
+
+        <h3>
+          Sensitive Information
+        </h3>
+
+        <p>
+          Users should not enter confidential, sensitive, personal, regulated,
+          authentication, financial, medical or otherwise protected information
+          unless they have independently determined that using the tool in
+          their own environment is appropriate.
+        </p>
+
+        <h3>
+          JWT Disclaimer
+        </h3>
+
+        <p>
+          The JWT Decoder is intended to decode the readable header and payload
+          portions of a JSON Web Token. Decoding a token does not verify its
+          cryptographic signature and does not establish that the contained
+          information is authentic or trustworthy.
+        </p>
+
+        <h3>
+          Cryptographic Disclaimer
+        </h3>
+
+        <p>
+          Hashes generated by this website are produced using browser-provided
+          cryptographic functionality. A cryptographic hash is not encryption
+          and cannot be used to recover the original input. The availability
+          and implementation of browser cryptographic APIs may vary between
+          environments.
+        </p>
+
+        <h3>
+          Third-Party Software
+        </h3>
+
+        <p>
+          The website's source code may contain code, components, libraries or
+          other software elements originating from third parties. Such elements
+          remain subject to their respective licenses, copyright provisions and
+          other applicable legal terms.
+        </p>
+
+        <h3>
+          External Services
+        </h3>
+
+        <p>
+          Links to external websites or services may be provided for
+          convenience. External services operate independently and may have
+          their own privacy policies, terms of use, logging practices and data
+          processing activities. The website operator does not control those
+          practices.
+        </p>
+
+        <h3>
+          No Guarantee
+        </h3>
+
+        <p>
+          Formatting, validation, conversion, decoding, encoding, hashing or
+          other processing performed by the tools does not guarantee that the
+          result is accurate, complete, secure, error-free, legally compliant
+          or suitable for any particular purpose.
+        </p>
+
+        <p>
+          The website and its tools are provided on an “as is” and “as
+          available” basis to the fullest extent permitted by applicable law.
+          The operator does not guarantee continuous availability, accuracy,
+          reliability, compatibility or security of the website.
+        </p>
+
+        <p>
+          To the fullest extent permitted by applicable law, the operator shall
+          not be liable for damages, data loss, service interruptions, security
+          incidents or other consequences arising from the use of, inability to
+          use, or reliance upon the website or its tools. Nothing in this notice
+          excludes or limits liability that cannot lawfully be excluded or
+          limited.
+        </p>
+
+        <p>
+          By using this website, users acknowledge that browser-based processing
+          does not eliminate all risks associated with the user's own device,
+          browser, extensions, network or environment.
+        </p>
+
+      </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+      <div class="footer-inner">
+
+        <div class="footer-copyright">
+          © 2026 nvo987
+        </div>
+
+        <nav
+          class="footer-links"
+          aria-label="Footer navigation"
+        >
+
+          <a href="mailto:nvo@nvo987.us">
+            nvo@nvo987.us
+          </a>
+
+          <a
+            href="https://identity.nvo987.us"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            did:web:identity.nvo987.us
+          </a>
+
+          <a
+            href="https://www.nvo987.us"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            www.nvo987.us
+          </a>
+
+        </nav>
+
+      </div>
+
+    </footer>
+
+  </div>
+
+</div>
+
+
+<script>
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+const navButtons =
+  document.querySelectorAll(".nav-button");
+
+const tools =
+  document.querySelectorAll(".tool");
+
+function openTool(name) {
+
+  tools.forEach(tool => {
+    tool.classList.toggle(
+      "active",
+      tool.id === "tool-" + name
+    );
+  });
+
+  navButtons.forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.tool === name
+    );
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
+navButtons.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    () => {
+      openTool(button.dataset.tool);
+    }
+  );
+
+});
+
+document
+  .querySelector(".brand")
+  .addEventListener(
+    "click",
+    event => {
+      event.preventDefault();
+      openTool("json-formatter");
+    }
+  );
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function setStatus(element, message, type) {
+
+  element.textContent = message;
+
+  element.className = "status";
+
+  if (type) {
+    element.classList.add(type);
+  }
+}
+
+
+function updateLineNumbers(textarea, container) {
+
+  const count =
+    Math.max(
+      1,
+      textarea.value.split("\n").length
+    );
+
+  let output = "";
+
+  for (let i = 1; i <= count; i++) {
+    output += i + "\n";
+  }
+
+  container.textContent =
+    output;
+}
+
+
+function syncLines(textarea, container) {
+
+  updateLineNumbers(
+    textarea,
+    container
+  );
+
+  container.scrollTop =
+    textarea.scrollTop;
+}
+
+
+function getJsonErrorPosition(
+  text,
+  error
+) {
+
+  const match =
+    error.message.match(
+      /position (\d+)/i
+    );
+
+  if (!match) {
+    return null;
+  }
+
+  const position =
+    Number(match[1]);
+
+  const before =
+    text.slice(0, position);
+
+  const line =
+    before.split("\n").length;
+
+  const lastNewLine =
+    before.lastIndexOf("\n");
+
+  const column =
+    position - lastNewLine;
+
+  return {
+    line,
+    column,
+    position
+  };
+}
+
+
+async function copyText(
+  text,
+  statusElement
+) {
+
+  if (!text) {
+
+    setStatus(
+      statusElement,
+      "There is nothing to copy.",
+      "warning"
+    );
+
+    return;
+  }
+
+  try {
+
+    await navigator.clipboard.writeText(text);
+
+    setStatus(
+      statusElement,
+      "Copied to clipboard.",
+      "success"
+    );
+
+  } catch {
+
+    setStatus(
+      statusElement,
+      "Unable to copy to clipboard.",
+      "error"
+    );
+
+  }
+}
+
+
+/* =========================================================
+   JSON FORMATTER
+========================================================= */
+
+const jsonFormatterInput =
+  document.getElementById(
+    "jsonFormatterInput"
+  );
+
+const jsonFormatLines =
+  document.getElementById(
+    "jsonFormatLines"
+  );
+
+const jsonFormatStatus =
+  document.getElementById(
+    "jsonFormatStatus"
+  );
+
+jsonFormatterInput.addEventListener(
+  "input",
+  () => {
+    syncLines(
+      jsonFormatterInput,
+      jsonFormatLines
+    );
+  }
+);
+
+jsonFormatterInput.addEventListener(
+  "scroll",
+  () => {
+    jsonFormatLines.scrollTop =
+      jsonFormatterInput.scrollTop;
+  }
+);
+
+document
+  .getElementById("jsonFormatButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const input =
+        jsonFormatterInput.value;
+
+      if (!input.trim()) {
+
+        setStatus(
+          jsonFormatStatus,
+          "Please enter JSON data.",
+          "warning"
+        );
+
+        return;
+      }
+
+      try {
+
+        const parsed =
+          JSON.parse(input);
+
+        const spaces =
+          Number(
+            document.getElementById(
+              "jsonIndent"
+            ).value
+          );
+
+        jsonFormatterInput.value =
+          JSON.stringify(
+            parsed,
+            null,
+            spaces
+          );
+
+        updateLineNumbers(
+          jsonFormatterInput,
+          jsonFormatLines
+        );
+
+        setStatus(
+          jsonFormatStatus,
+          "Valid JSON. Successfully formatted.",
+          "success"
+        );
+
+      } catch (error) {
+
+        const position =
+          getJsonErrorPosition(
+            input,
+            error
+          );
+
+        if (position) {
+
+          setStatus(
+            jsonFormatStatus,
+            "Invalid JSON — line " +
+            position.line +
+            ", column " +
+            position.column +
+            ": " +
+            error.message,
+            "error"
+          );
+
+        } else {
+
+          setStatus(
+            jsonFormatStatus,
+            "Invalid JSON: " +
+            error.message,
+            "error"
+          );
+
+        }
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("jsonMinifyButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      try {
+
+        const parsed =
+          JSON.parse(
+            jsonFormatterInput.value
+          );
+
+        jsonFormatterInput.value =
+          JSON.stringify(parsed);
+
+        updateLineNumbers(
+          jsonFormatterInput,
+          jsonFormatLines
+        );
+
+        setStatus(
+          jsonFormatStatus,
+          "Valid JSON. Successfully minified.",
+          "success"
+        );
+
+      } catch (error) {
+
+        setStatus(
+          jsonFormatStatus,
+          "Invalid JSON: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("jsonCopyButton")
+  .addEventListener(
+    "click",
+    () => {
+      copyText(
+        jsonFormatterInput.value,
+        jsonFormatStatus
+      );
+    }
+  );
+
+
+document
+  .getElementById("jsonClearButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      jsonFormatterInput.value = "";
+
+      updateLineNumbers(
+        jsonFormatterInput,
+        jsonFormatLines
+      );
+
+      setStatus(
+        jsonFormatStatus,
+        "Ready."
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   JSON VALIDATOR
+========================================================= */
+
+const jsonValidatorInput =
+  document.getElementById(
+    "jsonValidatorInput"
+  );
+
+const jsonValidatorLines =
+  document.getElementById(
+    "jsonValidatorLines"
+  );
+
+const jsonValidatorStatus =
+  document.getElementById(
+    "jsonValidatorStatus"
+  );
+
+jsonValidatorInput.addEventListener(
+  "input",
+  () => {
+    syncLines(
+      jsonValidatorInput,
+      jsonValidatorLines
+    );
+  }
+);
+
+jsonValidatorInput.addEventListener(
+  "scroll",
+  () => {
+    jsonValidatorLines.scrollTop =
+      jsonValidatorInput.scrollTop;
+  }
+);
+
+document
+  .getElementById("jsonValidateButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const input =
+        jsonValidatorInput.value;
+
+      if (!input.trim()) {
+
+        setStatus(
+          jsonValidatorStatus,
+          "Please enter JSON data.",
+          "warning"
+        );
+
+        return;
+      }
+
+      try {
+
+        JSON.parse(input);
+
+        setStatus(
+          jsonValidatorStatus,
+          "Valid JSON.",
+          "success"
+        );
+
+      } catch (error) {
+
+        const position =
+          getJsonErrorPosition(
+            input,
+            error
+          );
+
+        if (position) {
+
+          setStatus(
+            jsonValidatorStatus,
+            "Invalid JSON — line " +
+            position.line +
+            ", column " +
+            position.column +
+            ": " +
+            error.message,
+            "error"
+          );
+
+        } else {
+
+          setStatus(
+            jsonValidatorStatus,
+            "Invalid JSON: " +
+            error.message,
+            "error"
+          );
+
+        }
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("jsonValidatorClear")
+  .addEventListener(
+    "click",
+    () => {
+
+      jsonValidatorInput.value = "";
+
+      updateLineNumbers(
+        jsonValidatorInput,
+        jsonValidatorLines
+      );
+
+      setStatus(
+        jsonValidatorStatus,
+        "Ready."
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   JSON TREE
+========================================================= */
+
+function renderJsonTree(
+  value,
+  container,
+  depth = 0,
+  key = null
+) {
+
+  const row =
+    document.createElement("div");
+
+  row.className =
+    "tree-row";
+
+  row.style.paddingLeft =
+    (depth * 20) + "px";
+
+  if (key !== null) {
+
+    const keySpan =
+      document.createElement("span");
+
+    keySpan.className =
+      "tree-key";
+
+    keySpan.textContent =
+      key + ": ";
+
+    row.appendChild(
+      keySpan
+    );
+
+  }
+
+  if (
+    value !== null &&
+    typeof value === "object"
+  ) {
+
+    const isArray =
+      Array.isArray(value);
+
+    const label =
+      document.createElement("span");
+
+    label.textContent =
+      isArray ? "[" : "{";
+
+    row.appendChild(
+      label
+    );
+
+    container.appendChild(row);
+
+    Object.keys(value).forEach(childKey => {
+
+      renderJsonTree(
+        value[childKey],
+        container,
+        depth + 1,
+        isArray
+          ? "[" + childKey + "]"
+          : childKey
+      );
+
+    });
+
+    const closing =
+      document.createElement("div");
+
+    closing.className =
+      "tree-row";
+
+    closing.style.paddingLeft =
+      (depth * 20) + "px";
+
+    closing.textContent =
+      isArray ? "]" : "}";
+
+    container.appendChild(
+      closing
+    );
+
+    return;
+  }
+
+  const valueSpan =
+    document.createElement("span");
+
+  valueSpan.className =
+    "tree-value";
+
+  valueSpan.textContent =
+    JSON.stringify(value);
+
+  row.appendChild(
+    valueSpan
+  );
+
+  container.appendChild(
+    row
+  );
+}
+
+
+document
+  .getElementById("jsonTreeButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const input =
+        document.getElementById(
+          "jsonTreeInput"
+        ).value;
+
+      const output =
+        document.getElementById(
+          "jsonTreeOutput"
+        );
+
+      const status =
+        document.getElementById(
+          "jsonTreeStatus"
+        );
+
+      output.innerHTML = "";
+
+      try {
+
+        const parsed =
+          JSON.parse(input);
+
+        renderJsonTree(
+          parsed,
+          output
+        );
+
+        setStatus(
+          status,
+          "Valid JSON tree generated.",
+          "success"
+        );
+
+      } catch (error) {
+
+        output.textContent =
+          "Unable to build tree.";
+
+        setStatus(
+          status,
+          "Invalid JSON: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   JSON SCHEMA VALIDATOR
+========================================================= */
+
+function validateSchema(
+  value,
+  schema,
+  path = "$"
+) {
+
+  const errors = [];
+
+  function typeOf(value) {
+
+    if (value === null) {
+      return "null";
+    }
+
+    if (Array.isArray(value)) {
+      return "array";
+    }
+
+    return typeof value;
+  }
+
+  if (schema.type) {
+
+    const actual =
+      typeOf(value);
+
+    const expected =
+      schema.type;
+
+    if (actual !== expected) {
+
+      errors.push(
+        path +
+        ": expected " +
+        expected +
+        ", got " +
+        actual
+      );
+
+      return errors;
+    }
+
+  }
+
+  if (
+    schema.required &&
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  ) {
+
+    schema.required.forEach(
+      property => {
+
+        if (
+          !Object.prototype.hasOwnProperty.call(
+            value,
+            property
+          )
+        ) {
+
+          errors.push(
+            path +
+            ": missing required property \"" +
+            property +
+            "\""
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+  if (
+    schema.properties &&
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value)
+  ) {
+
+    Object.keys(
+      schema.properties
+    ).forEach(
+      property => {
+
+        if (
+          Object.prototype.hasOwnProperty.call(
+            value,
+            property
+          )
+        ) {
+
+          errors.push(
+            ...validateSchema(
+              value[property],
+              schema.properties[property],
+              path + "." + property
+            )
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+  if (
+    schema.items &&
+    Array.isArray(value)
+  ) {
+
+    value.forEach(
+      (item, index) => {
+
+        errors.push(
+          ...validateSchema(
+            item,
+            schema.items,
+            path + "[" + index + "]"
+          )
+        );
+
+      }
+    );
+
+  }
+
+  return errors;
+}
+
+
+document
+  .getElementById("schemaValidateButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const status =
+        document.getElementById(
+          "schemaStatus"
+        );
+
+      try {
+
+        const value =
+          JSON.parse(
+            document.getElementById(
+              "schemaJson"
+            ).value
+          );
+
+        const schema =
+          JSON.parse(
+            document.getElementById(
+              "schemaInput"
+            ).value
+          );
+
+        const errors =
+          validateSchema(
+            value,
+            schema
+          );
+
+        if (errors.length === 0) {
+
+          setStatus(
+            status,
+            "JSON matches the schema.",
+            "success"
+          );
+
+        } else {
+
+          setStatus(
+            status,
+            errors.join(" | "),
+            "error"
+          );
+
+        }
+
+      } catch (error) {
+
+        setStatus(
+          status,
+          "Invalid JSON or JSON Schema: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   XML
+========================================================= */
+
+function parseXml(xml) {
+
+  const parser =
+    new DOMParser();
+
+  const documentXml =
+    parser.parseFromString(
+      xml,
+      "application/xml"
+    );
+
+  const parserError =
+    documentXml.querySelector(
+      "parsererror"
+    );
+
+  if (parserError) {
+
+    return {
+      valid: false,
+      error: parserError.textContent
+    };
+
+  }
+
+  return {
+    valid: true,
+    document: documentXml
+  };
+}
+
+
+function formatXml(xml) {
+
+  const parsed =
+    parseXml(xml);
+
+  if (!parsed.valid) {
+    return parsed;
+  }
+
+  const serializer =
+    new XMLSerializer();
+
+  let raw =
+    serializer.serializeToString(
+      parsed.document
+    );
+
+  raw =
+    raw.replace(
+      />\s+</g,
+      "><"
+    );
+
+  const lines = [];
+
+  let indent = 0;
+
+  raw
+    .replace(
+      /(>)(<)(\/*)/g,
+      "$1\n$2$3"
+    )
+    .split("\n")
+    .forEach(
+      line => {
+
+        const clean =
+          line.trim();
+
+        if (!clean) {
+          return;
+        }
+
+        if (/^<\//.test(clean)) {
+          indent =
+            Math.max(
+              0,
+              indent - 1
+            );
+        }
+
+        lines.push(
+          "  ".repeat(indent) +
+          clean
+        );
+
+        if (
+          /^<[^!?/][^>]*[^/]>\s*$/.test(clean) &&
+          !/<\/[^>]+>$/.test(clean)
+        ) {
+          indent++;
+        }
+
+      }
+    );
+
+  return {
+    valid: true,
+    formatted: lines.join("\n")
+  };
+}
+
+
+/* XML FORMATTER */
+
+const xmlFormatterInput =
+  document.getElementById(
+    "xmlFormatterInput"
+  );
+
+const xmlFormatLines =
+  document.getElementById(
+    "xmlFormatLines"
+  );
+
+const xmlFormatStatus =
+  document.getElementById(
+    "xmlFormatStatus"
+  );
+
+xmlFormatterInput.addEventListener(
+  "input",
+  () => {
+    syncLines(
+      xmlFormatterInput,
+      xmlFormatLines
+    );
+  }
+);
+
+xmlFormatterInput.addEventListener(
+  "scroll",
+  () => {
+    xmlFormatLines.scrollTop =
+      xmlFormatterInput.scrollTop;
+  }
+);
+
+document
+  .getElementById("xmlFormatButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const result =
+        formatXml(
+          xmlFormatterInput.value.trim()
+        );
+
+      if (!result.valid) {
+
+        setStatus(
+          xmlFormatStatus,
+          "Invalid XML: " +
+          result.error,
+          "error"
+        );
+
+        return;
+      }
+
+      xmlFormatterInput.value =
+        result.formatted;
+
+      updateLineNumbers(
+        xmlFormatterInput,
+        xmlFormatLines
+      );
+
+      setStatus(
+        xmlFormatStatus,
+        "Valid XML. Successfully formatted.",
+        "success"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById("xmlMinifyButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const result =
+        formatXml(
+          xmlFormatterInput.value.trim()
+        );
+
+      if (!result.valid) {
+
+        setStatus(
+          xmlFormatStatus,
+          "Invalid XML: " +
+          result.error,
+          "error"
+        );
+
+        return;
+      }
+
+      xmlFormatterInput.value =
+        result.formatted.replace(
+          />\s+</g,
+          "><"
+        );
+
+      updateLineNumbers(
+        xmlFormatterInput,
+        xmlFormatLines
+      );
+
+      setStatus(
+        xmlFormatStatus,
+        "Valid XML. Successfully minified.",
+        "success"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById("xmlCopyButton")
+  .addEventListener(
+    "click",
+    () => {
+      copyText(
+        xmlFormatterInput.value,
+        xmlFormatStatus
+      );
+    }
+  );
+
+
+document
+  .getElementById("xmlClearButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      xmlFormatterInput.value = "";
+
+      updateLineNumbers(
+        xmlFormatterInput,
+        xmlFormatLines
+      );
+
+      setStatus(
+        xmlFormatStatus,
+        "Ready."
+      );
+
+    }
+  );
+
+
+/* XML VALIDATOR */
+
+const xmlValidatorInput =
+  document.getElementById(
+    "xmlValidatorInput"
+  );
+
+const xmlValidatorLines =
+  document.getElementById(
+    "xmlValidatorLines"
+  );
+
+const xmlValidatorStatus =
+  document.getElementById(
+    "xmlValidatorStatus"
+  );
+
+xmlValidatorInput.addEventListener(
+  "input",
+  () => {
+    syncLines(
+      xmlValidatorInput,
+      xmlValidatorLines
+    );
+  }
+);
+
+xmlValidatorInput.addEventListener(
+  "scroll",
+  () => {
+    xmlValidatorLines.scrollTop =
+      xmlValidatorInput.scrollTop;
+  }
+);
+
+document
+  .getElementById("xmlValidateButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const result =
+        parseXml(
+          xmlValidatorInput.value.trim()
+        );
+
+      if (!result.valid) {
+
+        setStatus(
+          xmlValidatorStatus,
+          "Invalid XML: " +
+          result.error,
+          "error"
+        );
+
+        return;
+      }
+
+      setStatus(
+        xmlValidatorStatus,
+        "Valid XML.",
+        "success"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById("xmlValidatorClear")
+  .addEventListener(
+    "click",
+    () => {
+
+      xmlValidatorInput.value = "";
+
+      updateLineNumbers(
+        xmlValidatorInput,
+        xmlValidatorLines
+      );
+
+      setStatus(
+        xmlValidatorStatus,
+        "Ready."
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   JSON → XML
+========================================================= */
+
+function escapeXml(value) {
+
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&apos;"
+    );
+}
+
+
+function jsonToXml(
+  value,
+  tag = "root"
+) {
+
+  if (
+    value === null ||
+    typeof value !== "object"
+  ) {
+
+    return (
+      "<" +
+      tag +
+      ">" +
+      escapeXml(value) +
+      "</" +
+      tag +
+      ">"
+    );
+
+  }
+
+  if (Array.isArray(value)) {
+
+    return value
+      .map(
+        item =>
+          jsonToXml(
+            item,
+            "item"
+          )
+      )
+      .join("");
+
+  }
+
+  let output =
+    "<" + tag + ">";
+
+  Object.keys(value)
+    .forEach(
+      key => {
+
+        output +=
+          jsonToXml(
+            value[key],
+            key
+          );
+
+      }
+    );
+
+  output +=
+    "</" + tag + ">";
+
+  return output;
+}
+
+
+document
+  .getElementById("jsonToXmlButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const status =
+        document.getElementById(
+          "converterStatus"
+        );
+
+      try {
+
+        const value =
+          JSON.parse(
+            document.getElementById(
+              "converterJson"
+            ).value
+          );
+
+        document.getElementById(
+          "converterXml"
+        ).value =
+          jsonToXml(
+            value
+          );
+
+        setStatus(
+          status,
+          "JSON successfully converted to XML.",
+          "success"
+        );
+
+      } catch (error) {
+
+        setStatus(
+          status,
+          "Invalid JSON: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   XML → JSON
+========================================================= */
+
+function xmlElementToJson(
+  element
+) {
+
+  const children =
+    Array.from(
+      element.children
+    );
+
+  if (children.length === 0) {
+    return element.textContent.trim();
+  }
+
+  const object = {};
+
+  children.forEach(
+    child => {
+
+      const key =
+        child.tagName;
+
+      const value =
+        xmlElementToJson(
+          child
+        );
+
+      if (
+        Object.prototype.hasOwnProperty.call(
+          object,
+          key
+        )
+      ) {
+
+        if (
+          !Array.isArray(
+            object[key]
+          )
+        ) {
+
+          object[key] = [
+            object[key]
+          ];
+
+        }
+
+        object[key].push(
+          value
+        );
+
+      } else {
+
+        object[key] =
+          value;
+
+      }
+
+    }
+  );
+
+  return object;
+}
+
+
+document
+  .getElementById("xmlToJsonButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const status =
+        document.getElementById(
+          "converterStatus"
+        );
+
+      const result =
+        parseXml(
+          document.getElementById(
+            "converterXml"
+          ).value.trim()
+        );
+
+      if (!result.valid) {
+
+        setStatus(
+          status,
+          "Invalid XML: " +
+          result.error,
+          "error"
+        );
+
+        return;
+      }
+
+      const root =
+        result.document.documentElement;
+
+      const output = {};
+
+      output[root.tagName] =
+        xmlElementToJson(root);
+
+      document.getElementById(
+        "converterJson"
+      ).value =
+        JSON.stringify(
+          output,
+          null,
+          2
+        );
+
+      setStatus(
+        status,
+        "XML successfully converted to JSON.",
+        "success"
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   DIFF
+========================================================= */
+
+function compareObjects(
+  a,
+  b,
+  path = "$",
+  changes = []
+) {
+
+  if (
+    typeof a !== typeof b ||
+    Array.isArray(a) !== Array.isArray(b)
+  ) {
+
+    changes.push(
+      path +
+      ": value changed"
+    );
+
+    return changes;
+  }
+
+  if (
+    a === null ||
+    b === null ||
+    typeof a !== "object"
+  ) {
+
+    if (a !== b) {
+
+      changes.push(
+        path +
+        ": " +
+        JSON.stringify(a) +
+        " → " +
+        JSON.stringify(b)
+      );
+
+    }
+
+    return changes;
+  }
+
+  const keys =
+    new Set([
+      ...Object.keys(a),
+      ...Object.keys(b)
+    ]);
+
+  keys.forEach(
+    key => {
+
+      const nextPath =
+        Array.isArray(a)
+          ? path + "[" + key + "]"
+          : path + "." + key;
+
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          a,
+          key
+        )
+      ) {
+
+        changes.push(
+          nextPath +
+          ": added " +
+          JSON.stringify(b[key])
+        );
+
+        return;
+      }
+
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          b,
+          key
+        )
+      ) {
+
+        changes.push(
+          nextPath +
+          ": removed " +
+          JSON.stringify(a[key])
+        );
+
+        return;
+      }
+
+      compareObjects(
+        a[key],
+        b[key],
+        nextPath,
+        changes
+      );
+
+    }
+  );
+
+  return changes;
+}
+
+
+document
+  .getElementById("jsonDiffButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const status =
+        document.getElementById(
+          "jsonDiffStatus"
+        );
+
+      const output =
+        document.getElementById(
+          "jsonDiffOutput"
+        );
+
+      try {
+
+        const a =
+          JSON.parse(
+            document.getElementById(
+              "jsonDiffA"
+            ).value
+          );
+
+        const b =
+          JSON.parse(
+            document.getElementById(
+              "jsonDiffB"
+            ).value
+          );
+
+        const changes =
+          compareObjects(
+            a,
+            b
+          );
+
+        output.textContent =
+          changes.length
+            ? changes.join("\n")
+            : "No differences.";
+
+        setStatus(
+          status,
+          changes.length
+            ? changes.length +
+              " difference(s) found."
+            : "JSON documents are identical.",
+          changes.length
+            ? "warning"
+            : "success"
+        );
+
+      } catch (error) {
+
+        setStatus(
+          status,
+          "Invalid JSON: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("xmlDiffButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      const status =
+        document.getElementById(
+          "xmlDiffStatus"
+        );
+
+      const output =
+        document.getElementById(
+          "xmlDiffOutput"
+        );
+
+      const a =
+        formatXml(
+          document.getElementById(
+            "xmlDiffA"
+          ).value.trim()
+        );
+
+      const b =
+        formatXml(
+          document.getElementById(
+            "xmlDiffB"
+          ).value.trim()
+        );
+
+      if (!a.valid) {
+
+        setStatus(
+          status,
+          "Invalid original XML: " +
+          a.error,
+          "error"
+        );
+
+        return;
+      }
+
+      if (!b.valid) {
+
+        setStatus(
+          status,
+          "Invalid new XML: " +
+          b.error,
+          "error"
+        );
+
+        return;
+      }
+
+      const left =
+        a.formatted.split("\n");
+
+      const right =
+        b.formatted.split("\n");
+
+      const max =
+        Math.max(
+          left.length,
+          right.length
+        );
+
+      const changes = [];
+
+      for (
+        let i = 0;
+        i < max;
+        i++
+      ) {
+
+        const oldLine =
+          left[i] ?? "";
+
+        const newLine =
+          right[i] ?? "";
+
+        if (oldLine !== newLine) {
+
+          changes.push(
+            "Line " +
+            (i + 1) +
+            "\n- " +
+            oldLine +
+            "\n+ " +
+            newLine
+          );
+
+        }
+
+      }
+
+      output.textContent =
+        changes.length
+          ? changes.join("\n\n")
+          : "No differences.";
+
+      setStatus(
+        status,
+        changes.length
+          ? changes.length +
+            " difference(s) found."
+          : "XML documents are identical.",
+        changes.length
+          ? "warning"
+          : "success"
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   BASE64
+========================================================= */
+
+function utf8ToBase64(text) {
+
+  const bytes =
+    new TextEncoder().encode(text);
+
+  let binary = "";
+
+  bytes.forEach(
+    byte => {
+      binary += String.fromCharCode(byte);
+    }
+  );
+
+  return btoa(binary);
+}
+
+
+function base64ToUtf8(base64) {
+
+  const binary =
+    atob(base64);
+
+  const bytes =
+    Uint8Array.from(
+      binary,
+      char => char.charCodeAt(0)
+    );
+
+  return new TextDecoder().decode(bytes);
+}
+
+
+document
+  .getElementById("base64Encode")
+  .addEventListener(
+    "click",
+    () => {
+
+      const input =
+        document.getElementById(
+          "base64Input"
+        ).value;
+
+      const output =
+        document.getElementById(
+          "base64Output"
+        );
+
+      const status =
+        document.getElementById(
+          "base64Status"
+        );
+
+      try {
+
+        output.textContent =
+          utf8ToBase64(input);
+
+        setStatus(
+          status,
+          "Successfully encoded.",
+          "success"
+        );
+
+      } catch (error) {
+
+        setStatus(
+          status,
+          "Unable to encode: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("base64Decode")
+  .addEventListener(
+    "click",
+    () => {
+
+      const input =
+        document.getElementById(
+          "base64Input"
+        ).value;
+
+      const output =
+        document.getElementById(
+          "base64Output"
+        );
+
+      const status =
+        document.getElementById(
+          "base64Status"
+        );
+
+      try {
+
+        output.textContent =
+          base64ToUtf8(input.trim());
+
+        setStatus(
+          status,
+          "Successfully decoded.",
+          "success"
+        );
+
+      } catch (error) {
+
+        setStatus(
+          status,
+          "Invalid Base64 data.",
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("base64Copy")
+  .addEventListener(
+    "click",
+    () => {
+
+      copyText(
+        document.getElementById(
+          "base64Output"
+        ).textContent,
+        document.getElementById(
+          "base64Status"
+        )
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   URL
+========================================================= */
+
+document
+  .getElementById("urlEncode")
+  .addEventListener(
+    "click",
+    () => {
+
+      const input =
+        document.getElementById(
+          "urlInput"
+        ).value;
+
+      document.getElementById(
+        "urlOutput"
+      ).textContent =
+        encodeURIComponent(input);
+
+      setStatus(
+        document.getElementById(
+          "urlStatus"
+        ),
+        "Successfully encoded.",
+        "success"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById("urlDecode")
+  .addEventListener(
+    "click",
+    () => {
+
+      const status =
+        document.getElementById(
+          "urlStatus"
+        );
+
+      try {
+
+        document.getElementById(
+          "urlOutput"
+        ).textContent =
+          decodeURIComponent(
+            document.getElementById(
+              "urlInput"
+            ).value
+          );
+
+        setStatus(
+          status,
+          "Successfully decoded.",
+          "success"
+        );
+
+      } catch {
+
+        setStatus(
+          status,
+          "Invalid encoded URL component.",
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("urlCopy")
+  .addEventListener(
+    "click",
+    () => {
+
+      copyText(
+        document.getElementById(
+          "urlOutput"
+        ).textContent,
+        document.getElementById(
+          "urlStatus"
+        )
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   JWT
+========================================================= */
+
+function decodeBase64Url(value) {
+
+  let base64 =
+    value
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+
+  while (
+    base64.length % 4 !== 0
+  ) {
+    base64 += "=";
+  }
+
+  return base64ToUtf8(
+    base64
+  );
+}
+
+
+document
+  .getElementById("jwtDecode")
+  .addEventListener(
+    "click",
+    () => {
+
+      const token =
+        document.getElementById(
+          "jwtInput"
+        ).value.trim();
+
+      const status =
+        document.getElementById(
+          "jwtStatus"
+        );
+
+      const header =
+        document.getElementById(
+          "jwtHeader"
+        );
+
+      const payload =
+        document.getElementById(
+          "jwtPayload"
+        );
+
+      try {
+
+        const parts =
+          token.split(".");
+
+        if (parts.length !== 3) {
+          throw new Error(
+            "A JWT must contain three parts."
+          );
+        }
+
+        header.textContent =
+          JSON.stringify(
+            JSON.parse(
+              decodeBase64Url(
+                parts[0]
+              )
+            ),
+            null,
+            2
+          );
+
+        payload.textContent =
+          JSON.stringify(
+            JSON.parse(
+              decodeBase64Url(
+                parts[1]
+              )
+            ),
+            null,
+            2
+          );
+
+        setStatus(
+          status,
+          "JWT header and payload decoded. Signature was not verified.",
+          "success"
+        );
+
+      } catch (error) {
+
+        header.textContent = "—";
+        payload.textContent = "—";
+
+        setStatus(
+          status,
+          "Unable to decode JWT: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   UUID
+========================================================= */
+
+document
+  .getElementById("uuidGenerate")
+  .addEventListener(
+    "click",
+    () => {
+
+      const output =
+        document.getElementById(
+          "uuidOutput"
+        );
+
+      const status =
+        document.getElementById(
+          "uuidStatus"
+        );
+
+      if (
+        crypto &&
+        typeof crypto.randomUUID ===
+          "function"
+      ) {
+
+        output.textContent =
+          crypto.randomUUID();
+
+        setStatus(
+          status,
+          "UUID v4 generated locally.",
+          "success"
+        );
+
+      } else {
+
+        setStatus(
+          status,
+          "This browser does not support crypto.randomUUID().",
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("uuidCopy")
+  .addEventListener(
+    "click",
+    () => {
+
+      copyText(
+        document.getElementById(
+          "uuidOutput"
+        ).textContent,
+        document.getElementById(
+          "uuidStatus"
+        )
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   HASH
+========================================================= */
+
+async function generateHash(
+  algorithm,
+  text
+) {
+
+  const data =
+    new TextEncoder().encode(text);
+
+  const hashBuffer =
+    await crypto.subtle.digest(
+      algorithm,
+      data
+    );
+
+  const hashArray =
+    Array.from(
+      new Uint8Array(hashBuffer)
+    );
+
+  return hashArray
+    .map(
+      byte =>
+        byte
+          .toString(16)
+          .padStart(2, "0")
+    )
+    .join("");
+}
+
+
+document
+  .getElementById("hashGenerate")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const status =
+        document.getElementById(
+          "hashStatus"
+        );
+
+      try {
+
+        const algorithm =
+          document.getElementById(
+            "hashAlgorithm"
+          ).value;
+
+        const text =
+          document.getElementById(
+            "hashInput"
+          ).value;
+
+        const hash =
+          await generateHash(
+            algorithm,
+            text
+          );
+
+        document.getElementById(
+          "hashOutput"
+        ).textContent =
+          hash;
+
+        setStatus(
+          status,
+          algorithm +
+          " hash generated locally.",
+          "success"
+        );
+
+      } catch (error) {
+
+        setStatus(
+          status,
+          "Unable to generate hash: " +
+          error.message,
+          "error"
+        );
+
+      }
+
+    }
+  );
+
+
+document
+  .getElementById("hashCopy")
+  .addEventListener(
+    "click",
+    () => {
+
+      copyText(
+        document.getElementById(
+          "hashOutput"
+        ).textContent,
+        document.getElementById(
+          "hashStatus"
+        )
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   TIMESTAMP
+========================================================= */
+
+document
+  .getElementById("timestampToDate")
+  .addEventListener(
+    "click",
+    () => {
+
+      const value =
+        document.getElementById(
+          "timestampInput"
+        ).value.trim();
+
+      const status =
+        document.getElementById(
+          "timestampStatus"
+        );
+
+      const output =
+        document.getElementById(
+          "timestampOutput"
+        );
+
+      const timestamp =
+        Number(value);
+
+      if (
+        !Number.isFinite(timestamp)
+      ) {
+
+        setStatus(
+          status,
+          "Please enter a valid Unix timestamp.",
+          "error"
+        );
+
+        return;
+      }
+
+      const milliseconds =
+        Math.abs(timestamp) < 100000000000
+          ? timestamp * 1000
+          : timestamp;
+
+      const date =
+        new Date(milliseconds);
+
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+
+        setStatus(
+          status,
+          "Invalid timestamp.",
+          "error"
+        );
+
+        return;
+      }
+
+      output.textContent =
+        date.toISOString();
+
+      setStatus(
+        status,
+        "Timestamp converted successfully.",
+        "success"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById("dateToTimestamp")
+  .addEventListener(
+    "click",
+    () => {
+
+      const value =
+        document.getElementById(
+          "dateInput"
+        ).value;
+
+      const status =
+        document.getElementById(
+          "timestampStatus"
+        );
+
+      const output =
+        document.getElementById(
+          "timestampOutput"
+        );
+
+      if (!value) {
+
+        setStatus(
+          status,
+          "Please select a date and time.",
+          "warning"
+        );
+
+        return;
+      }
+
+      const date =
+        new Date(value);
+
+      const seconds =
+        Math.floor(
+          date.getTime() / 1000
+        );
+
+      output.textContent =
+        String(seconds);
+
+      setStatus(
+        status,
+        "Date converted successfully.",
+        "success"
+      );
+
+    }
+  );
+
+
+document
+  .getElementById("currentTimestamp")
+  .addEventListener(
+    "click",
+    () => {
+
+      const timestamp =
+        Math.floor(
+          Date.now() / 1000
+        );
+
+      document.getElementById(
+        "timestampInput"
+      ).value =
+        timestamp;
+
+      document.getElementById(
+        "timestampOutput"
+      ).textContent =
+        new Date().toISOString();
+
+      setStatus(
+        document.getElementById(
+          "timestampStatus"
+        ),
+        "Current timestamp generated.",
+        "success"
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+updateLineNumbers(
+  jsonFormatterInput,
+  jsonFormatLines
+);
+
+updateLineNumbers(
+  jsonValidatorInput,
+  jsonValidatorLines
+);
+
+updateLineNumbers(
+  xmlFormatterInput,
+  xmlFormatLines
+);
+
+updateLineNumbers(
+  xmlValidatorInput,
+  xmlValidatorLines
+);
+
+</script>
+
+</body>
+    </html> 
